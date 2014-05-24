@@ -19,7 +19,7 @@ def parse(document, fil='main'):
 def strip_line(ln):
     ln2 = ln.strip()
     if '//' in ln2:
-        return ln2[:ln2.find('//')]
+        return ln2[:ln2.find('//')].rstrip()
     else:
         return ln2
 
@@ -84,7 +84,7 @@ def parse_lines(lns, fil='main', voffset=0, hoffset=0):
             u.args.append(out.args[-1])
         elif out.fun == 'code':
             if len(o) > 0 and o[-1].fun == 'init':
-                o[-1].args.append(out[1])
+                o[-1].args.append(astnode('seq', out.args, *out.metadata))
             else:
                 astargs = [astnode('seq', [], *out[0].metadata), out[1]]
                 o.args.append(astnode('init', astargs, *out[0].metadata))
