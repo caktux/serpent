@@ -1,28 +1,25 @@
 #!/usr/bin/python
-
 import random
+from serpent import parser, rewriter, compiler, lllparser
 
-
-def bijection_test_lllparser(ast2):
-    text2 = lllparser.serialize_lll(ast2)
+def bijection_test_lllparser(lll):
+    text = lllparser.serialize_lll(lll)
     i = 0
     n = random.randrange(4)  # No comments yet.
     while i >= 0 and n > 0:
-        i = text2.find('\n', i)
+        i = text.find('\n', i)
         n -= 1
     if i > 0:
-        text2 = text2[:i] + '\n' + text2[i:]
-    print(text2)
+        text = text[:i] + '\n' + text[i:]
+    print(text)
 
-    ast3  = lllparser.parse_lll(text2)
-    if ast3.listfy() != ast2.listfy():
+    parsed_lll = lllparser.parse_lll(text)
+    if parsed_lll.listfy() != lll.listfy():
         print("BUG: Parsing output again gave different result!")
-        print(ast2)
-        print(ast3)
+        print(lll)
+        print(parsed_lll)
         print("")
 
-
-from serpent import parser, rewriter, compiler, lllparser
 t = open('tests.txt').readlines()
 i = 0
 while True:
@@ -37,15 +34,15 @@ while True:
     ast = parser.parse(text)
     print "AST:", ast
     print ""
-    ast2 = rewriter.compile_to_lll(ast)
-    print "LLL:", ast2
+    lll = rewriter.compile_to_lll(ast)
+    print "LLL:", lll
     print ""
-    bijection_test_lllparser(ast2)
+    bijection_test_lllparser(lll)
 
     varz = rewriter.analyze(ast)
     print "Analysis: ", varz
     print ""
-    aevm = compiler.compile_lll(ast2)
+    aevm = compiler.compile_lll(lll)
     print "AEVM:", ' '.join([str(x) for x in aevm])
     print ""
     code = compiler.assemble(aevm)
