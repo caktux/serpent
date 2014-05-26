@@ -61,7 +61,6 @@ y[0] = msg(0xf345747062de4d05d897d62c4696febbedcb36b8, 10^18, tx.gas - 100, a, 3
 x = y[0]
 ================
 a = 0x1001 & 1
-
 ================
 // A comment on a line on its own at the start of a file
 ================
@@ -74,3 +73,8 @@ of 1:
     return('1')
 default:
     return("most default")
+================
+init:
+    contract.storage[1] = msg.sender
+code:
+    contract.storage[msg.sender] = 1

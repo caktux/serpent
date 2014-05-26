@@ -77,6 +77,12 @@ def parse_lines(lns, fil='main', voffset=0, hoffset=0):
                 while len(u.args) == 3:
                     u = u.args[-1]
                 u.args.append(out.args[-1] if out.fun == 'else' else out)
+        elif out.fun == 'code':
+            if len(o) > 0 and o[-1].fun == 'init':
+                o[-1].args.append(astnode('seq', out.args, *out.metadata))
+            else:
+                astargs = [astnode('seq', [], *out[0].metadata), out[1]]
+                o.args.append(astnode('init', astargs, *out[0].metadata))
         else:
         # Normal case: just add the parsed line to the output
             o.append(out)
