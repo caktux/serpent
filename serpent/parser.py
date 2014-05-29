@@ -19,7 +19,9 @@ def parse(document, fil='main'):
 def strip_line(ln):
     ln2 = ln.strip()
     if '//' in ln2:
-        return ln2[:ln2.find('//')]
+        ln2 = ln2[:ln2.find('//')].rstrip()
+    if '#' in ln2:
+        return ln2[:ln2.find('#')].rstrip()
     else:
         return ln2
 
@@ -32,7 +34,7 @@ def parse_lines(lns, fil='main', voffset=0, hoffset=0):
         main = lns[i]
         line_index = i
         # Skip empty lines
-        if len(main.strip()) == 0 or main.strip()[:2] == '//':
+        if len(main.strip()) == 0 or main.strip()[:2] == '//' or main.strip()[:1] == '#':
             i += 1
             continue
         if spaces(main) > 0:
@@ -213,7 +215,7 @@ def toktype(token):
         return 'compound'
     elif token.val in precedence:
         return 'binary_operation'
-    elif re.match('^[0-9a-zA-Z\-\.]*$', token.val):
+    elif re.match('^[0-9a-zA-Z\-\._#]*$', token.val):
         return 'alphanum'
     elif token.val[0] in ['"', "'"] and token.val[0] == token.val[-1]:
         return 'alphanum'
